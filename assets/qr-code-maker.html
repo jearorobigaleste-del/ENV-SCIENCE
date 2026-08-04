@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRESS — QR Code Maker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --paper: #EDEAE1;
+    --paper-2: #E3DFD3;
+    --ink: #1A1A17;
+    --ink-soft: #55534A;
+    --scan: #C8392A;
+    --scan-soft: #C8392A22;
+    --line: #1A1A1733;
+    font-size: 16px;
+  }
+
+  @font-face{
+    font-family: 'Archivo-fallback';
+    src: local('Arial');
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .crop{
+    position: fixed;
+    width: 18px; height: 18px;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .crop::before, .crop::after{
+    content:'';
+    position:absolute;
+    background: var(--ink);
+  }
+  .crop::before{ width:100%; height:1px; top:50%; }
+  .crop::after{ width:1px; height:100%; left:50%; }
+  .crop.tl{ top:14px; left:14px; }
+  .crop.tr{ top:14px; right:14px; }
+  .crop.bl{ bottom:14px; left:14px; }
+  .crop.br{ bottom:14px; right:14px; }
+
+  header{
+    padding: 48px 32px 18px;
+    text-align:center;
+    position: relative;
+  }
+
+  .eyebrow{
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--scan);
+    margin-bottom: 14px;
+  }
+
+  h1{
+    font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+    font-weight: 900;
+    font-stretch: condensed;
+    text-transform: uppercase;
+    font-size: clamp(2.6rem, 9vw, 5.2rem);
+    letter-spacing: -0.02em;
+    line-height: 0.86;
+    margin: 0;
+    transform: scaleY(1.08);
+  }
+
+  h1 span{ color: var(--scan); }
+
+  .sub{
+    font-size: 14px;
+    color: var(--ink-soft);
+    max-width: 440px;
+    margin: 16px auto 0;
+    line-height: 1.5;
+  }
+
+  .rule{
+    border: none;
+    border-top: 1px dashed var(--line);
+    margin: 30px auto 0;
+    max-width: 900px;
+  }
+
+  main{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 44px;
+    align-items: start;
+  }
+
+  @media (max-width: 720px){
+    main{ grid-template-columns: 1fr; }
+  }
+
+  .panel{
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    padding: 28px;
+    position: relative;
+  }
+
+  .panel-label{
+    font-family: 'Courier New', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    position: absolute;
+    top: -9px;
+    left: 20px;
+    background: var(--paper);
+    padding: 0 8px;
+  }
+
+  label{
+    display:block;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 20px 0 8px;
+  }
+  label:first-of-type{ margin-top: 4px; }
+
+  input[type=text], input[type=color], select{
+    width: 100%;
+    padding: 12px 12px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+  }
+  input[type=text]:focus, select:focus{
+    box-shadow: 0 0 0 3px var(--scan-soft);
+    border-color: var(--scan);
+  }
+
+  .row{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .color-field{
+    display:flex;
+    align-items:center;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    padding: 4px 10px;
+  }
+  .color-field input[type=color]{
+    border:none;
+    width: 34px;
+    height: 34px;
+    padding:0;
+    background:none;
+    cursor:pointer;
+  }
+  .color-field span{
+    font-family:'Courier New', monospace;
+    font-size: 12px;
+    margin-left: 8px;
+    color: var(--ink-soft);
+  }
+
+  select{ appearance:none; cursor:pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0L5 6L10 0Z' fill='%231A1A17'/></svg>");
+    background-repeat:no-repeat;
+    background-position: right 14px center;
+  }
+
+  .btn{
+    margin-top: 26px;
+    width: 100%;
+    padding: 15px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .btn:hover{ background: var(--scan); }
+  .btn:disabled{ opacity: 0.4; cursor: not-allowed; }
+
+  .btn-ghost{
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    margin-top: 10px;
+  }
+  .btn-ghost:hover{ background: var(--ink); color: var(--paper); }
+
+  .preview{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align:center;
+    position: sticky;
+    top: 30px;
+  }
+
+  .stage{
+    background: #fff;
+    padding: 22px;
+    border: 1px solid var(--ink);
+    position: relative;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  #qr-render{
+    width: 220px;
+    height: 220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  #qr-render img, #qr-render canvas{
+    image-rendering: pixelated;
+    max-width: 100%;
+  }
+
+  .placeholder{
+    width: 220px;
+    height: 220px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    opacity: 0.18;
+  }
+  .placeholder div{ background: var(--ink); }
+  .placeholder div:nth-child(3n+1){ background: transparent; }
+  .placeholder div:nth-child(7n){ background: transparent; }
+
+  .scan-tag{
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin-top: 18px;
+  }
+  .scan-tag b{ color: var(--scan); }
+
+  footer{
+    text-align:center;
+    padding: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    h1{ animation: settle 0.5s ease both; }
+    @keyframes settle{
+      from{ opacity:0; transform: translateY(10px) scaleY(1.08); }
+      to{ opacity:1; transform: translateY(0) scaleY(1.08); }
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="crop tl"></div>
+<div class="crop tr"></div>
+<div class="crop bl"></div>
+<div class="crop br"></div>
+
+<header>
+  <div class="eyebrow">Plate no. 001 — ready for print</div>
+  <h1>MAKE YOUR<br><span>QR CODE</span></h1>
+  <p class="sub">Type a link, a note, anything worth scanning. Set your ink and paper. Pull the plate.</p>
+</header>
+
+<hr class="rule">
+
+<main>
+  <div class="panel">
+    <span class="panel-label">Input</span>
+
+    <label for="text">Content</label>
+    <input type="text" id="text" placeholder="https://example.com" value="https://claude.ai">
+
+    <label for="size">Size</label>
+    <select id="size">
+      <option value="180">Small — 180px</option>
+      <option value="220" selected>Medium — 220px</option>
+      <option value="320">Large — 320px</option>
+      <option value="420">Extra large — 420px</option>
+    </select>
+
+    <label for="level">Error correction</label>
+    <select id="level">
+      <option value="L">Low — cleanest pattern</option>
+      <option value="M" selected>Medium — standard</option>
+      <option value="Q">Quartile — sturdier</option>
+      <option value="H">High — best if adding a logo overlay later</option>
+    </select>
+
+    <div class="row">
+      <div>
+        <label for="fgcolor">Ink color</label>
+        <div class="color-field">
+          <input type="color" id="fgcolor" value="#1a1a17">
+          <span id="fgcolor-val">#1A1A17</span>
+        </div>
+      </div>
+      <div>
+        <label for="bgcolor">Paper color</label>
+        <div class="color-field">
+          <input type="color" id="bgcolor" value="#ffffff">
+          <span id="bgcolor-val">#FFFFFF</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" id="generate">Pull the plate</button>
+    <button class="btn btn-ghost" id="download" disabled>Download PNG</button>
+  </div>
+
+  <div class="preview">
+    <div class="stage">
+      <div id="qr-render">
+        <div class="placeholder">
+          <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+        </div>
+      </div>
+    </div>
+    <div class="scan-tag">Status: <b id="status-text">awaiting input</b></div>
+  </div>
+</main>
+
+<footer>Generated locally in your browser — nothing you type leaves this page</footer>
+
+<script>
+  const textInput = document.getElementById('text');
+  const sizeSelect = document.getElementById('size');
+  const levelSelect = document.getElementById('level');
+  const fgInput = document.getElementById('fgcolor');
+  const bgInput = document.getElementById('bgcolor');
+  const fgVal = document.getElementById('fgcolor-val');
+  const bgVal = document.getElementById('bgcolor-val');
+  const renderTarget = document.getElementById('qr-render');
+  const generateBtn = document.getElementById('generate');
+  const downloadBtn = document.getElementById('download');
+  const statusText = document.getElementById('status-text');
+
+  let currentQR = null;
+
+  fgInput.addEventListener('input', () => fgVal.textContent = fgInput.value.toUpperCase());
+  bgInput.addEventListener('input', () => bgVal.textContent = bgInput.value.toUpperCase());
+
+  function levelMap(v){
+    return QRCode.CorrectLevel[v] || QRCode.CorrectLevel.M;
+  }
+
+  function generate(){
+    const value = textInput.value.trim();
+    if(!value){
+      statusText.textContent = 'nothing to encode';
+      return;
+    }
+    renderTarget.innerHTML = '';
+    const size = parseInt(sizeSelect.value, 10);
+
+    currentQR = new QRCode(renderTarget, {
+      text: value,
+      width: size,
+      height: size,
+      colorDark: fgInput.value,
+      colorLight: bgInput.value,
+      correctLevel: levelMap(levelSelect.value)
+    });
+
+    downloadBtn.disabled = false;
+    statusText.textContent = 'plate ready — scan or download';
+  }
+
+  function download(){
+    const img = renderTarget.querySelector('img');
+    const canvas = renderTarget.querySelector('canvas');
+    const link = document.createElement('a');
+    link.download = 'qr-code.png';
+    if(img && img.src && img.src.startsWith('data:')){
+      link.href = img.src;
+    } else if(canvas){
+      link.href = canvas.toDataURL('image/png');
+    } else {
+      statusText.textContent = 'pull the plate first';
+      return;
+    }
+    link.click();
+  }
+
+  generateBtn.addEventListener('click', generate);
+  downloadBtn.addEventListener('click', download);
+  textInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') generate(); });
+
+  // initial render
+  generate();
+</script>
+
+</body>
+</html>

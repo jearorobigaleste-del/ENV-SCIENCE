@@ -136,4 +136,88 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
+
+  /* ---------- Lightbox gallery preview ---------- */
+  var lightbox = document.getElementById("lightbox");
+  var lightboxImg = document.getElementById("lightboxImg");
+  var lightboxCaption = document.getElementById("lightboxCaption");
+  var closeBtn = document.getElementById("lightboxClose");
+  var prevBtn = document.getElementById("lightboxPrev");
+  var nextBtn = document.getElementById("lightboxNext");
+  var galleryItems = Array.prototype.slice.call(
+    document.querySelectorAll(".gallery-item")
+  );
+
+  var currentIndex = 0;
+  var lastFocused = null;
+  var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+  function openLightbox(index) {
+    var item = galleryItems[index];
+    if (!item) return;
+    currentIndex = index;
+    var img = item.querySelector("img");
+    var caption = item.querySelector("figcaption");
+    lastFocused = document.activeElement;
+    lightboxImg.src = img.getAttribute("src");
+    lightboxImg.alt = img.getAttribute("alt") || "";
+    lightboxCaption.textContent = caption ? caption.textContent : "";
+    lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = scrollbarWidth + "px";
+    }
+    closeBtn.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove("open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
+    if (lastFocused) lastFocused.focus();
+  }
+
+  function step(direction) {
+    var next = currentIndex + direction;
+    if (next < 0) next = galleryItems.length - 1;
+    if (next >= galleryItems.length) next = 0;
+    openLightbox(next);
+  }
+
+  galleryItems.forEach(function (item, index) {
+    item.setAttribute("tabindex", "0");
+    item.addEventListener("click", function () {
+      openLightbox(index);
+    });
+    item.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openLightbox(index);
+      }
+    });
+  });
+
+  closeBtn.addEventListener("click", closeLightbox);
+  prevBtn.addEventListener("click", function () {
+    step(-1);
+  });
+  nextBtn.addEventListener("click", function () {
+    step(1);
+  });
+  lightbox.addEventListener("click", function (e) {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (!lightbox.classList.contains("open")) return;
+    if (e.key === "Escape") {
+      closeLightbox();
+    } else if (e.key === "ArrowLeft") {
+      step(-1);
+    } else if (e.key === "ArrowRight") {
+      step(1);
+    }
+  });
 })();
