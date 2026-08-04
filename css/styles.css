@@ -1477,6 +1477,7 @@ h1, h2, h3, h4, h5 {
    REFERENCES
    ============================================================ */
 .refs {
+  counter-reset: ref;
   max-width: 820px;
   margin: 0 auto;
   padding: clamp(28px, 4vw, 44px);
@@ -1488,19 +1489,18 @@ h1, h2, h3, h4, h5 {
 .refs li {
   counter-increment: ref;
   position: relative;
-  padding: 16px 0 16px 52px;
+  padding: 16px 0 16px 44px;
   border-bottom: 1px solid rgba(10, 46, 92, 0.07);
   font-size: 0.98rem;
   color: #3f4a5a;
-  text-indent: -1.6em;
-  padding-left: 2em;
-  margin-left: 2em;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-align: left;
 }
 .refs li:last-child {
   border-bottom: 0;
 }
 .refs li::before {
-  counter-reset: ref;
   content: counter(ref) ".";
   position: absolute;
   left: 0;
