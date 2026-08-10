@@ -1,11 +1,8 @@
 'use client'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { motion, AnimatePresence, useScroll, useMotionValueEvent, useTransform, type MotionValue } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
-import FrameCanvas from './FrameCanvas'
-import { FrameSequence, ENVI_BASE, ENVI_FRAMES, sampleEnvisciTimeline } from '@/lib/frames'
 
-function Reveal({
+export function Reveal({
   children,
   delay = 0,
   className,
@@ -27,7 +24,7 @@ function Reveal({
   )
 }
 
-function SectionShell({
+export function SectionShell({
   id,
   index,
   eyebrow,
@@ -66,7 +63,7 @@ function SectionShell({
   )
 }
 
-function FactRow({
+export function FactRow({
   term,
   body,
   accent,
@@ -169,141 +166,30 @@ const ENV_FACTS: { term: string; accent: string; body: string }[] = [
   { term: 'Sustainability', accent: '#4CAF8B', body: "Meeting today's needs without compromising the future. Sustainability is an information problem as much as an action problem." },
 ]
 
-const FACT_START = 0.13
-const FACT_STEP = 0.095
-
-function EnvFade({
-  progress,
-  range,
-  className,
-  children,
-}: {
-  progress: MotionValue<number>
-  range: [number, number]
-  className?: string
-  children: ReactNode
-}) {
-  const opacity = useTransform(progress, [range[0], range[0] + 0.035, range[1] - 0.035, range[1]], [0, 1, 1, 0])
-  const y = useTransform(progress, [range[0], range[0] + 0.04], [28, 0])
-  return (
-    <motion.div style={{ opacity, y }} className={`pointer-events-none ${className ?? ''}`}>
-      {children}
-    </motion.div>
-  )
-}
-
 export function EnvironmentSection() {
-  const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
-  const envi = useMemo(() => new FrameSequence(ENVI_BASE, ENVI_FRAMES), [])
-  const [shownFacts, setShownFacts] = useState(0)
-  const factsRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = factsRef.current
-    if (el) el.scrollTop = el.scrollHeight
-  }, [shownFacts])
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    let started = false
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started) {
-          started = true
-          envi.warm(1, 40)
-          io.disconnect()
-        }
-      },
-      { rootMargin: '400px 0px' },
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [envi])
-
-  useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    let n = 0
-    for (let i = 0; i < ENV_FACTS.length; i++) {
-      if (v >= FACT_START + i * FACT_STEP) n = i + 1
-    }
-    setShownFacts(n)
-    envi.warm(sampleEnvisciTimeline(v).frame)
-  })
-
   return (
-    <section
+    <SectionShell
       id="environment"
-      ref={ref}
-      className="relative"
-      style={{ height: '900vh' }}
+      index="03"
+      eyebrow="Environmental Science"
+      title="What is Environmental Science?"
+      lede="Environmental Science studies the physical systems that surround life — atmosphere, water, land, and living things — and how human activity shapes them. It provides the real-world problems that Information Technology and Communication help us understand and solve."
+      visual={
+        <div className="relative flex justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/frames/envi/ezgif-frame-001.png"
+            alt=""
+            className={`h-[420px] w-full object-contain ${BLENDED}`}
+            loading="lazy"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink to-transparent" />
+        </div>
+      }
     >
-      <div className="sticky top-0 stage-screen w-full overflow-hidden bg-bg">
-        <FrameCanvas
-          progress={scrollYProgress}
-          seq={envi}
-          timeline={sampleEnvisciTimeline}
-          label="A landscape animation driven by scroll in the Environmental Science section"
-        />
-
-        {/* atmosphere — blend canvas into the page */}
-        <div className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(ellipse_at_center,transparent_58%,rgba(0,0,0,0.5)_100%)]" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-40 bg-gradient-to-t from-bg to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-[5] h-24 bg-gradient-to-b from-bg to-transparent" />
-
-        <div className="absolute inset-0 z-10">
-          {/* INTRO — 0.00 – 0.12, centered */}
-          <EnvFade
-            progress={scrollYProgress}
-            range={[0.0, 0.12]}
-            className="inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center"
-          >
-            <p className="eyebrow">03 / Environmental Science</p>
-            <h2 className="text-4xl font-bold leading-[1.04] tracking-display text-gradient sm:text-5xl md:text-6xl text-balance">
-              What is Environmental Science?
-            </h2>
-            <p className="max-w-md text-sm leading-relaxed text-white/55 md:text-base">
-              Environmental Science provides real-world problems and data that technology can help understand and
-              solve. Scroll to play the animation.
-            </p>
-          </EnvFade>
-
-          {/* FACTS — appear one by one and stay while scrolling down, removed when scrolling back up,
-              split into a left and a right column */}
-          <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-[max(6rem,env(safe-area-inset-bottom))] md:px-6 md:pb-[max(7rem,env(safe-area-inset-bottom))]">
-            <div
-              ref={factsRef}
-              className="mx-auto grid max-h-[55dvh] max-w-5xl grid-cols-2 gap-3 overflow-y-auto no-scrollbar md:max-h-[62dvh] md:gap-4"
-            >
-              <AnimatePresence>
-                {ENV_FACTS.slice(0, shownFacts).map((fact) => (
-                  <motion.div
-                    key={fact.term}
-                    initial={{ opacity: 0, y: 24 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 24 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="rounded-2xl border border-white/[0.07] bg-[#0A0A0C]/55 p-4 backdrop-blur-md md:p-5"
-                  >
-                    <div className="mb-1.5 flex items-center gap-3">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: fact.accent }} />
-                      <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-white/80 md:text-sm">
-                        {fact.term}
-                      </h3>
-                    </div>
-                    <p className="text-xs leading-relaxed text-white/50 md:text-sm">{fact.body}</p>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-
-        {/* progress hairline */}
-        <div className="pointer-events-none absolute bottom-0 left-0 z-30 h-px w-full bg-white/[0.04]">
-          <motion.div className="h-full origin-left bg-[#4CAF8B]" style={{ scaleX: scrollYProgress }} />
-        </div>
-      </div>
-    </section>
+      {ENV_FACTS.map((f) => (
+        <FactRow key={f.term} term={f.term} accent={f.accent} body={f.body} />
+      ))}
+    </SectionShell>
   )
 }

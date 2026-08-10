@@ -9,6 +9,9 @@ const CENTER_LINKS = [
   { label: 'IT', action: () => scrollToProgress(0.35) },
   { label: 'Environment', action: () => scrollToProgress(0.55) },
   { label: 'Connection', action: () => scrollToId('connection') },
+  { label: 'Impact', action: () => scrollToId('impact') },
+  { label: 'Future', action: () => scrollToId('future') },
+  { label: 'References', action: () => scrollToId('references') },
 ]
 
 export default function Navbar() {
