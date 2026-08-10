@@ -1,0 +1,14 @@
+
+> communication-it-environment@0.1.0 dev
+> next dev -p 3000
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.4s
+ ○ Compiling / ...
+ ✓ Compiled / in 4.2s (1203 modules)
+ GET / 200 in 4555ms
+ GET / 200 in 84ms
+ GET / 200 in 51ms
