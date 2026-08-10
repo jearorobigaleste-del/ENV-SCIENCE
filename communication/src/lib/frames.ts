@@ -17,9 +17,9 @@ export function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t
 }
 
-export function frameUrl(base: string, index: number) {
+export function frameUrl(base: string, index: number, ext = 'png') {
   const i = Math.round(index)
-  return `${base}/ezgif-frame-${String(i).padStart(3, '0')}.png`
+  return `${base}/ezgif-frame-${String(i).padStart(3, '0')}.${ext}`
 }
 
 /**
@@ -34,6 +34,7 @@ export class FrameSequence {
   constructor(
     public base: string,
     public count: number,
+    public ext = 'png',
   ) {}
 
   get(index: number): HTMLImageElement | undefined {
@@ -59,7 +60,7 @@ export class FrameSequence {
     const p = new Promise<HTMLImageElement>((resolve, reject) => {
       const img = new Image()
       img.decoding = 'async'
-      img.src = frameUrl(this.base, i)
+      img.src = frameUrl(this.base, i, this.ext)
       img.onload = () => {
         this.cache.set(i, img)
         this.lru.push(i)

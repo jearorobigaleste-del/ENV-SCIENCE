@@ -106,7 +106,7 @@ export function CommunicationSection() {
         <div className="relative flex justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/frames/iphone/ezgif-frame-001.jpg"
+            src="/frames/iphone/ezgif-frame-001.png"
             alt=""
             className={`h-[420px] w-full object-contain ${BLENDED}`}
             loading="lazy"
@@ -137,7 +137,7 @@ export function ItSection() {
         <div className="relative flex justify-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/frames/iphone/ezgif-frame-120.jpg"
+            src="/frames/iphone/ezgif-frame-120.png"
             alt=""
             className={`h-[420px] w-full object-contain ${BLENDED}`}
             loading="lazy"
