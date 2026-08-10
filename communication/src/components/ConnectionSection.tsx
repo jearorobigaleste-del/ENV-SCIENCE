@@ -48,7 +48,7 @@ export default function ConnectionSection() {
           className="text-center"
         >
           <p className="eyebrow">04 / The Connection</p>
-          <h2 className="mx-auto mt-5 max-w-3xl text-4xl font-bold leading-[1.04] tracking-display text-gradient sm:text-5xl md:text-6xl">
+          <h2 className="mx-auto mt-5 max-w-3xl text-4xl font-bold leading-[1.04] tracking-display text-gradient sm:text-5xl md:text-6xl text-balance">
             Three fields. One system.
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-white/55 md:text-base">

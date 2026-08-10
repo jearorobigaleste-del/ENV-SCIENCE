@@ -125,6 +125,14 @@ body {
     height: 100vh;
     height: 100dvh;
   }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 :focus-visible {
@@ -142,5 +150,17 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* The relation diagram is an SVG that scales down with the viewport; on phones
+   bump its labels so they stay legible and hide the tiny sub-labels. */
+@media (max-width: 767px) {
+  .relation-label {
+    font-size: 12px;
+    letter-spacing: 1.2px;
+  }
+  .relation-sub {
+    display: none;
   }
 }

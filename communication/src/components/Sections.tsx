@@ -60,7 +60,7 @@ function SectionShell({
             {visual}
           </Reveal>
         </div>
-        <div className="space-y-3">{children}</div>
+        <div className="space-y-3 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 lg:block lg:space-y-3">{children}</div>
       </div>
     </section>
   )
@@ -197,6 +197,12 @@ export function EnvironmentSection() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
   const envi = useMemo(() => new FrameSequence(ENVI_BASE, ENVI_FRAMES), [])
   const [shownFacts, setShownFacts] = useState(0)
+  const factsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = factsRef.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [shownFacts])
 
   useEffect(() => {
     const el = ref.current
@@ -250,10 +256,10 @@ export function EnvironmentSection() {
           <EnvFade
             progress={scrollYProgress}
             range={[0.0, 0.12]}
-            className="inset-x-0 bottom-0 flex flex-col items-center gap-4 px-6 pb-20 text-center md:pb-24"
+            className="inset-x-0 bottom-0 flex flex-col items-center gap-4 px-6 pb-[max(5rem,env(safe-area-inset-bottom))] text-center md:pb-24"
           >
             <p className="eyebrow">03 / Environmental Science</p>
-            <h2 className="text-4xl font-bold leading-[1.04] tracking-display text-gradient sm:text-5xl md:text-6xl">
+            <h2 className="text-4xl font-bold leading-[1.04] tracking-display text-gradient sm:text-5xl md:text-6xl text-balance">
               What is Environmental Science?
             </h2>
             <p className="max-w-md text-sm leading-relaxed text-white/55 md:text-base">
@@ -263,27 +269,32 @@ export function EnvironmentSection() {
           </EnvFade>
 
           {/* FACTS — appear one by one and stay while scrolling down, removed when scrolling back up */}
-          <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col justify-end gap-3 px-6 pb-24 md:pb-28 md:pl-[8vw]">
-            <AnimatePresence>
-              {ENV_FACTS.slice(0, shownFacts).map((fact) => (
-                <motion.div
-                  key={fact.term}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 24 }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className="max-w-xl rounded-2xl border border-white/[0.07] bg-[#0A0A0C]/55 p-4 backdrop-blur-md md:p-5"
-                >
-                  <div className="mb-1.5 flex items-center gap-3">
-                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: fact.accent }} />
-                    <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-white/80 md:text-sm">
-                      {fact.term}
-                    </h3>
-                  </div>
-                  <p className="text-xs leading-relaxed text-white/50 md:text-sm">{fact.body}</p>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+          <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-[max(6rem,env(safe-area-inset-bottom))] md:pb-[max(7rem,env(safe-area-inset-bottom))] md:pl-[8vw] md:pr-[4vw]">
+            <div
+              ref={factsRef}
+              className="flex max-h-[55dvh] flex-col gap-3 overflow-y-auto no-scrollbar md:grid md:max-h-[62dvh] md:grid-cols-2 md:gap-4 lg:max-w-4xl"
+            >
+              <AnimatePresence>
+                {ENV_FACTS.slice(0, shownFacts).map((fact) => (
+                  <motion.div
+                    key={fact.term}
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 24 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="rounded-2xl border border-white/[0.07] bg-[#0A0A0C]/55 p-4 backdrop-blur-md md:p-5"
+                  >
+                    <div className="mb-1.5 flex items-center gap-3">
+                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: fact.accent }} />
+                      <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-white/80 md:text-sm">
+                        {fact.term}
+                      </h3>
+                    </div>
+                    <p className="text-xs leading-relaxed text-white/50 md:text-sm">{fact.body}</p>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 

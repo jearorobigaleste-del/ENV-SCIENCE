@@ -21,7 +21,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-10%' }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mt-6 max-w-3xl text-3xl font-bold leading-[1.12] tracking-display text-gradient sm:text-4xl md:text-5xl"
+          className="mx-auto mt-6 max-w-3xl text-3xl font-bold leading-[1.12] tracking-display text-gradient sm:text-4xl md:text-5xl text-balance"
         >
           Communication connects us.
           <br />
@@ -35,12 +35,12 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-10%' }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row"
+          className="mt-12 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row"
         >
-          <button onClick={() => scrollToId('connection')} className="btn-primary">
+          <button onClick={() => scrollToId('connection')} className="btn-primary w-full sm:w-auto">
             Explore the Connection
           </button>
-          <button onClick={scrollTop} className="btn-ghost">
+          <button onClick={scrollTop} className="btn-ghost w-full sm:w-auto">
             Start Again
           </button>
         </motion.div>

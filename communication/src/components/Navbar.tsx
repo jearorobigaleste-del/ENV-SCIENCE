@@ -29,14 +29,14 @@ export default function Navbar() {
           onClick={scrollTop}
           className="flex items-baseline gap-2 text-[13px] font-semibold tracking-[0.14em] text-white"
         >
-          <span className="hidden sm:inline">COMMUNICATION</span>
+          <span className="hidden min-[360px]:inline">COMMUNICATION</span>
           <span className="text-white/40">×</span>
-          <span className="hidden md:inline">IT</span>
+          <span className="hidden lg:inline">IT</span>
           <span className="text-white/40">×</span>
           <span className="text-white/60">ENVIRONMENT</span>
         </button>
 
-        <nav className="hidden items-center gap-7 lg:flex">
+        <nav className="hidden items-center gap-6 md:flex lg:gap-7">
           {CENTER_LINKS.map((l) => (
             <button
               key={l.label}
@@ -61,7 +61,7 @@ export default function Navbar() {
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           aria-controls="mobile-nav"
-          className="flex flex-col items-end justify-center gap-[5px] p-2 lg:hidden"
+          className="flex flex-col items-end justify-center gap-[5px] p-2 md:hidden"
         >
           <span className={`h-px w-5 bg-white/70 transition-all ${open ? 'translate-y-[6px] rotate-45' : ''}`} />
           <span className={`h-px bg-white/70 transition-all ${open ? 'w-5 -translate-y-[6px] -rotate-45' : 'w-3.5'}`} />
@@ -76,7 +76,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="overflow-hidden border-t border-white/[0.06] bg-[#0A0A0C]/95 backdrop-blur-xl lg:hidden"
+            className="overflow-hidden border-t border-white/[0.06] bg-[#0A0A0C]/95 backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col px-5 py-4">
               {CENTER_LINKS.map((l) => (

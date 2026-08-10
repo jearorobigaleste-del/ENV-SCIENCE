@@ -80,10 +80,10 @@ export default function StoryOverlays({ progress }: { progress: MotionValue<numb
       <FadeBlock
         progress={progress}
         range={[0.0, 0.14]}
-        className="inset-x-0 bottom-0 flex flex-col items-center gap-4 px-6 pb-20 text-center md:pb-24"
+        className="inset-x-0 bottom-0 flex flex-col items-center gap-4 px-6 pb-[max(5rem,env(safe-area-inset-bottom))] text-center md:pb-24"
       >
         <p className="eyebrow">Communication × Information Technology × Environment</p>
-        <h1 className="text-4xl font-bold leading-[1.02] tracking-display text-gradient sm:text-5xl md:text-7xl">
+        <h1 className="text-4xl font-bold leading-[1.02] tracking-display text-gradient sm:text-5xl md:text-7xl text-balance">
           Everything starts
           <br />
           with a connection.
@@ -97,11 +97,11 @@ export default function StoryOverlays({ progress }: { progress: MotionValue<numb
       <FadeBlock
         progress={progress}
         range={[0.15, 0.35]}
-        className="inset-x-0 bottom-0 flex flex-col justify-end px-6 pb-24 md:pb-28 md:pl-[8vw]"
+        className="inset-x-0 bottom-0 flex flex-col justify-end px-6 pb-[max(6rem,env(safe-area-inset-bottom))] md:pb-[max(7rem,env(safe-area-inset-bottom))] md:pl-[8vw]"
       >
         <div className="max-w-xl">
           <p className="eyebrow mb-3">01 / Communication</p>
-          <h2 className="text-3xl font-bold tracking-display text-white sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl font-bold tracking-display text-white sm:text-4xl md:text-5xl text-balance">
             Information moves through connection.
           </h2>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-white/55 md:text-base">
@@ -123,11 +123,11 @@ export default function StoryOverlays({ progress }: { progress: MotionValue<numb
       <FadeBlock
         progress={progress}
         range={[0.35, 0.55]}
-        className="inset-x-0 bottom-0 flex flex-col justify-end px-6 pb-24 md:pb-28 md:pl-[8vw]"
+        className="inset-x-0 bottom-0 flex flex-col justify-end px-6 pb-[max(6rem,env(safe-area-inset-bottom))] md:pb-[max(7rem,env(safe-area-inset-bottom))] md:pl-[8vw]"
       >
         <div className="max-w-xl">
           <p className="eyebrow mb-3">02 / Information Technology</p>
-          <h2 className="text-3xl font-bold tracking-display text-white sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl font-bold tracking-display text-white sm:text-4xl md:text-5xl text-balance">
             Technology turns communication into capability.
           </h2>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-white/55 md:text-base">
@@ -149,13 +149,13 @@ export default function StoryOverlays({ progress }: { progress: MotionValue<numb
       <FadeBlock
         progress={progress}
         range={[0.55, 0.75]}
-        className="inset-x-0 bottom-0 flex flex-col justify-end px-6 pb-24 md:pb-28 md:pl-[8vw]"
+        className="inset-x-0 bottom-0 flex flex-col justify-end px-6 pb-[max(6rem,env(safe-area-inset-bottom))] md:pb-[max(7rem,env(safe-area-inset-bottom))] md:pl-[8vw]"
       >
         <div className="max-w-xl">
           <p className="eyebrow mb-3" style={{ color: 'rgba(122, 214, 174, 0.55)' }}>
             03 / Environmental Science
           </p>
-          <h2 className="text-3xl font-bold tracking-display text-white sm:text-4xl md:text-5xl">
+          <h2 className="text-3xl font-bold tracking-display text-white sm:text-4xl md:text-5xl text-balance">
             Technology can help us understand our environment.
           </h2>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-white/55 md:text-base">
@@ -200,10 +200,10 @@ export default function StoryOverlays({ progress }: { progress: MotionValue<numb
       <FadeBlock
         progress={progress}
         range={[0.9, 1.0]}
-        className="inset-x-0 bottom-0 flex flex-col items-center gap-5 px-6 pb-20 text-center md:pb-28"
+        className="inset-x-0 bottom-0 flex flex-col items-center gap-5 px-6 pb-[max(5rem,env(safe-area-inset-bottom))] text-center md:pb-[max(7rem,env(safe-area-inset-bottom))]"
       >
         <p className="eyebrow">Communication × IT × Environment</p>
-        <h2 className="text-3xl font-bold leading-[1.05] tracking-display text-gradient sm:text-5xl md:text-6xl">
+        <h2 className="text-3xl font-bold leading-[1.05] tracking-display text-gradient sm:text-5xl md:text-6xl text-balance">
           Three disciplines.
           <br />
           One connected world.
@@ -212,11 +212,11 @@ export default function StoryOverlays({ progress }: { progress: MotionValue<numb
           Communication moves information. Information Technology gives it structure and reach. Environmental
           Science gives that information purpose.
         </p>
-        <div className="flex flex-col items-center gap-3 sm:flex-row">
-          <button onClick={() => scrollToId('connection')} className="btn-primary">
+        <div className="flex w-full max-w-sm flex-col items-center gap-3 sm:w-auto sm:flex-row">
+          <button onClick={() => scrollToId('connection')} className="btn-primary w-full sm:w-auto">
             Explore the Connection
           </button>
-          <button onClick={scrollTop} className="btn-ghost">
+          <button onClick={scrollTop} className="btn-ghost w-full sm:w-auto">
             Start Again
           </button>
         </div>

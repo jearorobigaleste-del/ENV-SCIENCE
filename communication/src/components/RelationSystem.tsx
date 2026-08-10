@@ -142,6 +142,13 @@ export function RelationSystem({
                   }
                 : undefined
             }
+            onClick={
+              onHover && !compact
+                ? () => {
+                    onHover(node.id)
+                  }
+                : undefined
+            }
           >
             <circle cx={node.x} cy={node.y} r="26" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.12)" />
             <motion.circle
@@ -166,6 +173,7 @@ export function RelationSystem({
               fontSize={compact ? 8 : 9}
               fontWeight="600"
               letterSpacing="1.4"
+              className="relation-label"
             >
               {node.label}
             </text>
@@ -176,6 +184,7 @@ export function RelationSystem({
               fill={isActive ? node.accent : 'rgba(255,255,255,0.28)'}
               fontSize="7"
               letterSpacing="1.2"
+              className="relation-sub"
             >
               {DIRECTIONAL_LABELS[node.id]}
             </text>
