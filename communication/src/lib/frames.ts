@@ -38,7 +38,15 @@ export class FrameSequence {
 
   get(index: number): HTMLImageElement | undefined {
     const i = clamp(Math.round(index), 1, this.count)
-    return this.cache.get(i)
+    const hit = this.cache.get(i)
+    if (hit) {
+      const pos = this.lru.indexOf(i)
+      if (pos !== -1) {
+        this.lru.splice(pos, 1)
+        this.lru.push(i)
+      }
+    }
+    return hit
   }
 
   ensure(index: number): Promise<HTMLImageElement> {
@@ -68,26 +76,18 @@ export class FrameSequence {
     return p
   }
 
-  /** Eagerly load every frame, spread across idle time. */
-  preloadAll(batch = 6) {
-    if (isSlowConnection()) {
-      for (let i = 1; i <= Math.min(16, this.count); i++) this.ensure(i)
-      return
+  /**
+   * Warm a window of frames around the current index, biased forward in the
+   * direction of travel. Cheap on cached frames, so safe to call straight from
+   * scroll handlers; the LRU cap keeps decoded memory flat.
+   */
+  warm(index: number, lookahead = 30, lookback = 4) {
+    const i = clamp(Math.round(index), 1, this.count)
+    const ahead = isSlowConnection() ? 8 : lookahead
+    const back = isSlowConnection() ? 0 : lookback
+    for (let f = Math.max(1, i - back); f <= Math.min(this.count, i + ahead); f++) {
+      this.ensure(f)
     }
-    let cursor = 1
-    const step = () => {
-      const end = Math.min(cursor + batch, this.count + 1)
-      for (let i = cursor; i < end; i++) this.ensure(i)
-      cursor = end
-      if (cursor <= this.count) {
-        if (typeof requestIdleCallback === 'function') {
-          requestIdleCallback(step)
-        } else {
-          setTimeout(step, 120)
-        }
-      }
-    }
-    step()
   }
 }
 

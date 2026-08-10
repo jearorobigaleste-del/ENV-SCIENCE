@@ -28,12 +28,15 @@ export default function ScrollStage() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] })
   const [chapter, setChapter] = useState(0)
 
-  useMotionValueEvent(scrollYProgress, 'change', (v) => setChapter(activeChapter(v)))
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    setChapter(activeChapter(v))
+    iphone.warm(sampleTimeline(v).frame)
+  })
 
   const iphone = useMemo(() => new FrameSequence(IPHONE_BASE, IPHONE_FRAMES), [])
 
   useEffect(() => {
-    iphone.preloadAll(4)
+    iphone.warm(1, 40)
   }, [iphone])
 
   return (

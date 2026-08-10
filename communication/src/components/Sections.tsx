@@ -206,7 +206,7 @@ export function EnvironmentSection() {
       ([entry]) => {
         if (entry.isIntersecting && !started) {
           started = true
-          envi.preloadAll(6)
+          envi.warm(1, 40)
           io.disconnect()
         }
       },
@@ -222,6 +222,7 @@ export function EnvironmentSection() {
       if (v >= FACT_START + i * FACT_STEP) n = i + 1
     }
     setShownFacts(n)
+    envi.warm(sampleEnvisciTimeline(v).frame)
   })
 
   return (
