@@ -186,7 +186,7 @@ export default function StoryOverlays({ progress }: { progress: MotionValue<numb
             <RelationSystem active="none" compact />
           </div>
           <div className="absolute bottom-0 left-0 w-full max-w-md px-2 pb-3 text-center md:left-auto md:right-0 md:max-w-sm md:pb-5 md:text-left">
-            <p className="eyebrow mb-2">04 / The Connection</p>
+            <p className="eyebrow mb-2">The Connection</p>
             <h3 className="text-2xl font-bold tracking-display text-white md:text-4xl">One continuous system.</h3>
             <p className="mt-3 text-sm leading-relaxed text-white/55">
               Communication moves information. Information Technology structures it. Environmental Science gives
