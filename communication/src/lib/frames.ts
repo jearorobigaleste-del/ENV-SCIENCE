@@ -1,4 +1,4 @@
-export const IPHONE_FRAMES = 180
+export const IPHONE_FRAMES = 120
 export const ENVI_FRAMES = 180
 export const IPHONE_BASE = '/frames/iphone'
 export const ENVI_BASE = '/frames/envi'
@@ -18,8 +18,8 @@ export function lerp(a: number, b: number, t: number) {
 }
 
 export function frameUrl(base: string, index: number) {
-  const i = clamp(Math.round(index), 1, 180)
-  return `${base}/ezgif-frame-${String(i).padStart(3, '0')}.jpg`
+  const i = Math.round(index)
+  return `${base}/ezgif-frame-${String(i).padStart(3, '0')}.png`
 }
 
 /**
@@ -97,9 +97,9 @@ export type LayerSample = { seq: 'iphone' | 'envi'; frame: number }
  * Maps scroll progress (0..1) onto the iphone frame sequence — the main hero
  * animation (Communication → Information Technology).
  *
- *  0.00 – 0.35  iphone 1 → 180    (Communication — the phone comes apart)
- *  0.35 – 0.55  iphone 180, hold  (Information Technology — the parts)
- *  0.55 – 0.72  iphone 180 → 1    (Environment — it comes back together)
+ *  0.00 – 0.35  iphone 1 → 120    (Communication — the phone comes apart)
+ *  0.35 – 0.55  iphone 120, hold  (Information Technology — the parts)
+ *  0.55 – 0.72  iphone 120 → 1    (Environment — it comes back together)
  *  0.72 – 1.00  iphone assembled  (Connection + Final — always visible)
  */
 export function sampleTimeline(p: number): LayerSample {
